@@ -1,0 +1,12 @@
+# name: Easy Hills (20 min)
+# duration  resistance  cadence  label
+3:00  30  80  warm up
+2:00  40  85  flat road
+2:00  50  75  seated climb
+1:00  35  90  recover
+2:00  55  70  standing climb
+1:00  35  90  recover
+2:00  60  65  big hill
+1:00  35  90  recover
+3:00  45  80  steady
+3:00  28  85  cool down

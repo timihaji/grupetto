@@ -38,7 +38,7 @@ private data class UiScale(
 }
 
 @Composable
-fun ConfigurationPage(viewModel: ConfigurationViewModel) {
+fun ConfigurationPage(viewModel: ConfigurationViewModel, onOpenCourses: () -> Unit = {}) {
     val showPermissionInfo by remember { viewModel.showPermissionInfo }
     val latestRelease by remember { viewModel.latestRelease }
 
@@ -107,7 +107,8 @@ fun ConfigurationPage(viewModel: ConfigurationViewModel) {
                         viewModel::onStartServiceClicked,
                         viewModel::onQuitClicked,
                         viewModel::onClickedRelease,
-                        latestRelease
+                        latestRelease,
+                        onClickedCourses = onOpenCourses
                 )
             }
         }
@@ -139,7 +140,8 @@ private fun StartServicePage(
         onClickedStartOverlay: () -> Unit,
         onClickedQuitApp: () -> Unit,
         onClickedRelease: (Release) -> Unit,
-        latestRelease: Release?
+        latestRelease: Release?,
+        onClickedCourses: () -> Unit = {}
 ) {
     var showHeartRateDialog by remember { mutableStateOf(false) }
 
@@ -188,6 +190,36 @@ private fun StartServicePage(
                 ) {
                     Text(
                             text = if (isOverlayRunning) "Restart Overlay" else "Start Overlay",
+                            fontSize = uiScale.sp(18f),
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(uiScale.dp(12f)))
+
+        Card(
+                modifier = Modifier.fillMaxWidth(),
+                backgroundColor = cardColor,
+                elevation = uiScale.dp(4f)
+        ) {
+            Column(modifier = Modifier.padding(cardPadding)) {
+                Text("Courses", fontSize = uiScale.sp(18f), fontWeight = FontWeight.Bold, color = headingColor)
+                Spacer(modifier = Modifier.height(uiScale.dp(4f)))
+                Text(
+                        "Play your own timed resistance courses (Bike+ only: the bike sets the resistance for you).",
+                        fontSize = uiScale.sp(14f),
+                        color = bodyColor
+                )
+                Spacer(modifier = Modifier.height(uiScale.dp(8f)))
+                Button(
+                        onClick = onClickedCourses,
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(backgroundColor = accentColor)
+                ) {
+                    Text(
+                            text = "Open Courses",
                             fontSize = uiScale.sp(18f),
                             fontWeight = FontWeight.Bold,
                             color = Color.White

@@ -77,7 +77,10 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     ConfigurationPage(
-                        viewModel
+                        viewModel,
+                        onOpenCourses = {
+                            startActivity(Intent(this, com.spop.poverlay.course.CourseActivity::class.java))
+                        }
                     )
                 }
             }

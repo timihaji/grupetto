@@ -184,7 +184,8 @@ class OverlayService : LifecycleEnabledService() {
             }
 
         } else {
-            EmulatorSensorInterface
+            // Share the app-wide simulated bike so the overlay reflects course-player commands
+            (application as GrupettoApplication).sensorInterface
         }
 
         val timerViewModel = OverlayTimerViewModel(

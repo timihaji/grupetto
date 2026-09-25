@@ -79,6 +79,22 @@
                 android:value="" />
         </activity>
 
+        <activity
+            android:name=".course.CourseActivity"
+            android:exported="false"
+            android:label="Courses"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.PTONOverlay" />
+
+        <service
+            android:name=".course.CourseService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Drives bike resistance through a timed course" />
+        </service>
+
         <service
             android:name=".overlay.OverlayService"
             android:exported="false"

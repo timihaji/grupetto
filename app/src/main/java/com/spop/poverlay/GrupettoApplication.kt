@@ -5,8 +5,8 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import com.spop.poverlay.ble.BleServer
 import com.spop.poverlay.erg.ErgController
-import com.spop.poverlay.sensor.interfaces.DummySensorInterface
 import com.spop.poverlay.sensor.interfaces.PelotonBikePlusSensorInterface
+import com.spop.poverlay.sensor.interfaces.SimulatedBikeSensorInterface
 import com.spop.poverlay.sensor.interfaces.PelotonBikeSensorInterfaceV1New
 import com.spop.poverlay.sensor.interfaces.SensorInterface
 import com.spop.poverlay.util.IsBikePlus
@@ -18,6 +18,10 @@ class GrupettoApplication : Application() {
     lateinit var bleServer: BleServer
         private set
 
+    /** The one bike connection shared by BLE, ERG and the course player. */
+    lateinit var sensorInterface: SensorInterface
+        private set
+
     override fun onCreate() {
         super.onCreate()
         if (BuildConfig.DEBUG) {
@@ -26,6 +30,7 @@ class GrupettoApplication : Application() {
 
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val sensorInterface = createSensorInterface()
+        this.sensorInterface = sensorInterface
         val ergController = ErgController(sensorInterface)
         bleServer = BleServer(this, bluetoothManager, sensorInterface, ergController)
     }
@@ -38,7 +43,8 @@ class GrupettoApplication : Application() {
                 PelotonBikeSensorInterfaceV1New(this)
             }
         } else {
-            DummySensorInterface()
+            // Emulator / any non-Peloton device: a fake bike that honours setResistance()
+            SimulatedBikeSensorInterface()
         }
     }
 }
