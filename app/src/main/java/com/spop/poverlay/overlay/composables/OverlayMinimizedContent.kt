@@ -50,7 +50,8 @@ fun OverlayMinimizedContent(
     onLongPress: () -> Unit,
     onOpenSettings: () -> Unit,
     onMinimizeToggle: () -> Unit,
-    onLayout: (IntSize) -> Unit
+    onLayout: (IntSize) -> Unit,
+    courseStrip: (@Composable () -> Unit)? = null
 ) {
     val backgroundShape = if (isMinimized) {
         RoundedCornerShape(8.dp)
@@ -98,6 +99,10 @@ fun OverlayMinimizedContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         val infiniteTransition = rememberInfiniteTransition()
+        if (courseStrip != null) {
+            courseStrip()
+            Spacer(modifier = Modifier.width(8.dp))
+        }
         if (!isMinimized || showTimerWhenMinimized || timerPaused) {
 
             val timerAlpha = if (timerPaused) {

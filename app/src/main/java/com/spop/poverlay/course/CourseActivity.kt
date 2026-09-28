@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.spop.poverlay.GrupettoApplication
+import com.spop.poverlay.overlay.OverlayVisibility
 import com.spop.poverlay.ui.theme.MetricCadenceColor
 import com.spop.poverlay.ui.theme.MetricPowerColor
 import com.spop.poverlay.ui.theme.MetricResistanceColor
@@ -68,9 +69,22 @@ class CourseActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        OverlayVisibility.onScreenStarted(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        OverlayVisibility.onScreenStopped(this)
+    }
 }
 
 private val Heading = Color.White
+
+/** Keeps the bottom controls clear of the minimised stats bar, which sits over this screen. */
+private val OverlayClearance = 56.dp
 private val Body = Color(0xFFB0B0B8)
 private val CardBg = Color(0xFF1C1C22)
 
@@ -84,7 +98,7 @@ private fun CourseListScreen(
     onReload: () -> Unit,
     onClose: () -> Unit
 ) {
-    Column(Modifier.fillMaxSize().padding(24.dp)) {
+    Column(Modifier.fillMaxSize().padding(24.dp).padding(bottom = OverlayClearance)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text("Courses", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = Heading)
             Spacer(Modifier.weight(1f))
@@ -149,7 +163,7 @@ private fun PlayerScreen(
     val step = state.step
     val paused = state.phase == CoursePhase.PAUSED
 
-    Column(Modifier.fillMaxSize().padding(24.dp)) {
+    Column(Modifier.fillMaxSize().padding(24.dp).padding(bottom = OverlayClearance)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(state.course.name, fontSize = 26.sp, fontWeight = FontWeight.Bold, color = Heading)
             Spacer(Modifier.weight(1f))

@@ -14,6 +14,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.spop.poverlay.overlay.OverlayService
+import com.spop.poverlay.overlay.OverlayVisibility
 import com.spop.poverlay.releases.Release
 import com.spop.poverlay.releases.ReleaseChecker
 import com.spop.poverlay.sensor.heartrate.HeartRateDevice
@@ -264,15 +265,12 @@ class ConfigurationViewModel(
         }
     }
 
+    fun onAppStarted() {
+        OverlayVisibility.onScreenStarted(getApplication())
+    }
+
     fun onAppStopped() {
-        if (isOverlayRunning.value) {
-            ContextCompat.startForegroundService(
-                getApplication(),
-                Intent(getApplication(), OverlayService::class.java).apply {
-                    action = OverlayService.ActionRestoreOverlay
-                }
-            )
-        }
+        OverlayVisibility.onScreenStopped(getApplication())
     }
 
     private fun isIgnoringBatteryOptimizations(): Boolean {

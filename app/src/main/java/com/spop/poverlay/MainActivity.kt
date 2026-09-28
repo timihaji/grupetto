@@ -97,6 +97,11 @@ class MainActivity : ComponentActivity() {
         viewModel.onAppResumed()
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.onAppStarted()
+    }
+
     override fun onStop() {
         super.onStop()
         viewModel.onAppStopped()

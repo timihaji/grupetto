@@ -26,6 +26,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import com.spop.poverlay.course.CourseActivity
+import com.spop.poverlay.course.CourseService
+import com.spop.poverlay.overlay.composables.OverlayCourseStrip
 import com.spop.poverlay.overlay.composables.OverlayMainContent
 import com.spop.poverlay.overlay.composables.OverlayMinimizedContent
 import com.spop.poverlay.sensor.heartrate.HeartRateManager
@@ -71,6 +76,9 @@ fun Overlay(
     val timerLabel by timerViewModel.timerLabel.collectAsState(initial = "")
     val isTimerPaused by timerViewModel.timerPaused.collectAsState(initial = false)
     val errorMessage by sensorViewModel.errorMessage.collectAsState(initial = null)
+    val courseState by CourseService.state.collectAsState()
+    val activeCourse = courseState?.takeIf { it.isActive }
+    val context = LocalContext.current
 
     // Max values
     val maxPower by sensorViewModel.maxPower.collectAsState()
@@ -173,7 +181,17 @@ fun Overlay(
             onLongPress = { timerViewModel.onTimerLongPress() },
             onOpenSettings = { sensorViewModel.onOverlayDoubleTap() },
             onMinimizeToggle = { sensorViewModel.onOverlayPressed() },
-            onLayout = onTimerLayout
+            onLayout = onTimerLayout,
+            courseStrip = activeCourse?.let { course ->
+                {
+                    OverlayCourseStrip(course) {
+                        context.startActivity(
+                            Intent(context, CourseActivity::class.java)
+                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        )
+                    }
+                }
+            }
         )
     }
     val mainContent = @Composable {
