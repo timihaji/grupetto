@@ -112,6 +112,8 @@ class CourseService : LifecycleService() {
             tickerJob?.cancel()
             tickerJob = launch {
                 while (isActive) {
+                    // start() already sent the first ramp step; wait one period before the next
+                    delay(TICK_MS)
                     eng.tick(SystemClock.elapsedRealtime())
                     val s = eng.state.value
                     mutableState.value = s
@@ -120,7 +122,6 @@ class CourseService : LifecycleService() {
                         shutdown()
                         break
                     }
-                    delay(TICK_MS)
                 }
             }
         }

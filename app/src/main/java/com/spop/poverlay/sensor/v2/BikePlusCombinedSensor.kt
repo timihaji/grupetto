@@ -56,6 +56,7 @@ class BikePlusCombinedSensor(private val binder: IBinder) {
     )
     val resistance = mutableResistance.asSharedFlow()
 
+    private var pollCount = 0L
     private val errorCounter = ConsecutiveErrorCounter()
     private var threadRunning = AtomicBoolean(false)
 
@@ -84,6 +85,17 @@ class BikePlusCombinedSensor(private val binder: IBinder) {
                         mutablePower.tryEmit(bikeData.power.toFloat() / 100f)
                         mutableCadence.tryEmit(bikeData.rpm.toFloat())
                         mutableResistance.tryEmit(bikeData.targetResistance.toFloat())
+
+                        // Diagnostic, about once a second: measured values next to the target,
+                        // so a resistance command can be verified independently of what was written.
+                        if (++pollCount % 5 == 0L) {
+                            Timber.d(
+                                "BIKE target=%d current=%d stepper=%d encoder=%d rpm=%d power=%d",
+                                bikeData.targetResistance, bikeData.currentResistance,
+                                bikeData.stepperMotorPosition, bikeData.encoderAngle,
+                                bikeData.rpm, bikeData.power / 100
+                            )
+                        }
 
                         errorCounter.reset()
                     } catch (e: Exception) {
